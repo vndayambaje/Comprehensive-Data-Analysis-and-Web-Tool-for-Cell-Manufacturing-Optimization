@@ -1,46 +1,71 @@
-// scripts/web_server/frontend/src/App.js
+// src/App.js
 import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2'; // No need for 'chart.js/auto' with version 2.9.4
 import './App.css';
 
 function App() {
   const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/data')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/data');
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const fetchedData = await response.json();
+        setData(fetchedData);
+
+        if (fetchedData && fetchedData.length > 0) {
+          const timestamps = fetchedData.map(d => d.timestamp);
+          const temperatures = fetchedData.map(d => d.temperature);
+
+          setChartData({
+            labels: timestamps,
+            datasets: [
+              {
+                label: 'Temperature Over Time',
+                data: temperatures,
+                fill: false,
+                borderColor: 'rgba(75,192,192,1)',
+                borderWidth: 2,
+                tension: 0.1,
+              },
+            ],
+          });
+        } else {
+          setChartData({
+            labels: [],
+            datasets: [],
+          });
         }
-        return response.json();
-      })
-      .then(data => {
-        setData(data);
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching data:', error);
         setError(error.message);
         setLoading(false);
-      });
+      }
+    };
+    fetchData();
   }, []);
 
-  if (loading) {
-    return <div>Loading data...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (data.length === 0) {
-    return <div>No data available.</div>;
-  }
+  if (loading) return <div>Loading data...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="App">
-      <h1>Cell Manufacturing Data</h1>
+      <h1>Cell Manufacturing Dashboard</h1>
+      <img src="cell.png" alt="Tesla Logo" className="logo" />
+
+      {chartData && chartData.labels.length > 0 ? (
+        <div style={{ width: '600px', height: '300px', margin: '0 auto' }}> {/* Adjust the size here */}
+          <Line data={chartData} options={{ maintainAspectRatio: false }} />
+        </div> 
+      ) : (
+        <div>No chart data available.</div>
+      )}
+
       <table border="1">
         <thead>
           <tr>
@@ -53,22 +78,31 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              <td>{row.timestamp}</td>
-              <td>{row.temperature}</td>
-              <td>{row.pressure}</td>
-              <td>{row.material_usage}</td>
-              <td>{row.process_time}</td>
-              <td>{row.defect_rate}</td>
+          {data.length > 0 ? (
+            data.map((row, index) => (
+              <tr key={index}>
+                <td>{row.timestamp}</td>
+                <td>{row.temperature}</td>
+                <td>{row.pressure}</td>
+                <td>{row.material_usage}</td>
+                <td>{row.process_time}</td>
+                <td>{row.defect_rate}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6">No data available</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+
+      <div className="chat-box">
+        <h2>Chat</h2>
+        {/* Chat logic goes here */}
+      </div>
     </div>
   );
 }
 
 export default App;
-
-
