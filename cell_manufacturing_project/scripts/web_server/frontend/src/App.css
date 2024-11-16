@@ -1,7 +1,29 @@
 .App {
   text-align: center;
   font-family: Arial, sans-serif;
+}
+
+.video-container {
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden;
+}
+
+.fullscreen-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
   padding: 20px;
+  background-color: #fff; /* Ensure content has a background */
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px; /* Adjust height as needed */
+  margin: 0 auto;
 }
 
 table {
@@ -16,16 +38,11 @@ th, td {
 }
 
 th {
-  background-color: #f4f4f4;
-}
-
-.logo {
-  width: 150px;
-  margin: 20px auto;
+  background-color: #1178ec;
+  color: #fff;
 }
 
 .chat-box {
-  margin-top: 20px;
   padding: 10px;
   border: 1px solid #ccc;
   max-width: 400px;

@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2'; // No need for 'chart.js/auto' with version 2.9.4
+import { Line } from 'react-chartjs-2';
 import './App.css';
 
 function App() {
@@ -55,51 +55,59 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Cell Manufacturing Dashboard</h1>
-      <img src="cell.png" alt="Tesla Logo" className="logo" />
+      <div className="video-container">
+        <video className="fullscreen-video" autoPlay loop muted playsInline>
+          <source src="/video.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
 
-      {chartData && chartData.labels.length > 0 ? (
-        <div style={{ width: '600px', height: '300px', margin: '0 auto' }}> {/* Adjust the size here */}
-          <Line data={chartData} options={{ maintainAspectRatio: false }} />
-        </div> 
-      ) : (
-        <div>No chart data available.</div>
-      )}
+      <div className="content">
+        <h1>Cell Manufacturing Dashboard</h1>
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Material Usage</th>
-            <th>Process Time</th>
-            <th>Defect Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data.map((row, index) => (
-              <tr key={index}>
-                <td>{row.timestamp}</td>
-                <td>{row.temperature}</td>
-                <td>{row.pressure}</td>
-                <td>{row.material_usage}</td>
-                <td>{row.process_time}</td>
-                <td>{row.defect_rate}</td>
-              </tr>
-            ))
-          ) : (
+        {chartData && chartData.labels.length > 0 ? (
+          <div className="chart-container">
+            <Line data={chartData} options={{ maintainAspectRatio: false }} />
+          </div>
+        ) : (
+          <div>No chart data available.</div>
+        )}
+
+        <table>
+          <thead>
             <tr>
-              <td colSpan="6">No data available</td>
+              <th>Timestamp</th>
+              <th>Temperature</th>
+              <th>Pressure</th>
+              <th>Material Usage</th>
+              <th>Process Time</th>
+              <th>Defect Rate</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((row, index) => (
+                <tr key={index}>
+                  <td>{row.timestamp}</td>
+                  <td>{row.temperature}</td>
+                  <td>{row.pressure}</td>
+                  <td>{row.material_usage}</td>
+                  <td>{row.process_time}</td>
+                  <td>{row.defect_rate}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No data available</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      <div className="chat-box">
-        <h2>Chat</h2>
-        {/* Chat logic goes here */}
+        <div className="chat-box">
+          <h2>Chat</h2>
+          {/* Chat logic goes here */}
+        </div>
       </div>
     </div>
   );
